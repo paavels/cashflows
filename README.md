@@ -4,7 +4,8 @@ Command line utilities for producing and manipulating cashflows. Idea is to have
 
 ## create_cashflow
 
-Produces cashflow by combining payment pattern and amounts file.
+Produces cashflow by combining development patterns (derived from cumulative development factors (CDF)) and amounts file.
+See https://en.wikipedia.org/wiki/Chain-ladder_method
 
 Usage:
 
@@ -13,7 +14,8 @@ Usage:
 ```
 
 ### TODO:
- - [ ] delimiter setting from command line arguments
+ - [x] delimiter setting from command line arguments
  - [ ] command line argument to switch from cumulative values to incremental values
  - [ ] think about unix-pipe style approach
-
+ - [ ] proper error handling
+ - [ ] pattern - sort by DevelopmentPeriod
