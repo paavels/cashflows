@@ -1,0 +1,12 @@
+[package]
+name = "cashflows"
+version = "0.1.0"
+authors = ["Pavels Nikolajevs <paavels@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+clap = "2.33"
+
+[[bin]]
+name = "create_cashflow"
+path = "src/create_cashflow.rs"

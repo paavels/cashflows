@@ -1,0 +1,7 @@
+OriginLength;DevelopmentPeriod;Pattern
+3;1;0.06
+3;2;0.25
+3;3;0.62
+3;4;0.75
+3;5;0.93
+3;6;1.00
