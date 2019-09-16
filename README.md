@@ -1,4 +1,4 @@
-# Cashflows
+# cashflows.rs
 
 Command line utilities for producing and manipulating cashflows. Idea is to have low level command line utilities that perform individual tasks and can be combined for more complex scenarios. 
 
