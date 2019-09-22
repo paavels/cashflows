@@ -19,3 +19,6 @@ Usage:
  - [ ] think about unix-pipe style approach
  - [ ] proper error handling
  - [ ] pattern - sort by DevelopmentPeriod
+ - [ ] link ratios to development factors utility
+ - [ ] discounting utility
+ 
