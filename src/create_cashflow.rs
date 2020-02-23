@@ -1,8 +1,10 @@
 extern crate clap;
 extern crate serde;
+extern crate chrono;
 extern crate csv;
 
 use clap::{App, Arg};
+use chrono::prelude::*;
 use serde::Deserialize;
 //use std::io;
 use std::error::Error;
@@ -85,6 +87,47 @@ fn read_payment_pattern(filename: &str, delimiter: u8) -> Result<Vec<f64>, Box<d
     Ok(result)
 }
 
+fn create_cashflow(amounts_filename: &str, delimiter: u8, cashflow_filename: &str) -> Result<(), Box<dyn Error>> {
+    //, cashflow_matrix: Vec<Vec<f64>>
+    let mut rdr = csv::ReaderBuilder::new().delimiter(delimiter).from_path(Path::new(amounts_filename))?;
+
+    let headers = rdr.headers()?;
+    let column_count: usize = headers.len();
+    let mut amount_column_idx: usize = usize::max_value();
+    let mut origin_month_column_idx: usize = usize::max_value();
+    let mut occurence_month_column_idx: usize = usize::max_value();
+
+    for (idx, col) in headers.iter().enumerate() {
+        println!("c = {} {}", idx, col);
+
+        match col {
+            "OriginMonth" => { origin_month_column_idx = idx },
+            "OccurenceMonth" => { occurence_month_column_idx = idx },
+            "Amount" => { amount_column_idx = idx }
+            _ => {}
+        }
+    }
+
+    assert!(amount_column_idx != usize::max_value(), "Amount column not found in file");
+    assert!(origin_month_column_idx != usize::max_value(), "OriginMonth column not found in file");
+    assert!(occurence_month_column_idx != usize::max_value(), "OccurenceMonth column not found in file");
+
+    for row in rdr.records() {
+        let mut amount: f64 = 0.0_f64;
+        let mut origin_month: Date<FixedOffset>;
+        let mut occurence_month: Date<FixedOffset>;
+        for(idx, val) in row?.iter().enumerate() {
+            if idx == amount_column_idx { amount = val.replace(",", ".").parse::<f64>()?; }
+            if idx == origin_month_column_idx { origin_month = DateTime::parse_from_str(val, "%Y-%m-%d")?.date(); }
+            if idx == occurence_month_column_idx { occurence_month = DateTime::parse_from_str(val, "%Y-%m-%d")?.date(); }
+        }
+
+        println!("amount = {}", amount);
+    }
+
+    Ok(())
+}
+
 fn main() {
     let matches = App::new("Create cashflow")
                         .version("0.1")
@@ -133,6 +176,14 @@ fn main() {
     let cashflow_pattern: Vec<f64> = convert_to_increment_pattern(cumulative_cashflow_pattern);
     let cashflow_matrix = create_pattern_matrix(cashflow_pattern);
 
-    print!("result = {:?}", cashflow_matrix);
+    match create_cashflow(parm_amounts_file, delimiter, parm_cashflow_file) {
+        Ok(_) => { },
+        Err(err) => {
+            println!("Error reading cashflow pattern file: {}", err);
+            process::exit(1);
+        }
+    }
+
+    println!("result = {:?}", cashflow_matrix);
 
 }
